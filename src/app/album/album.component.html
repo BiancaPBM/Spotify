@@ -1,0 +1,14 @@
+<div class = "album-container">
+  <mat-card class = "album-card" *ngIf="album">
+    <mat-card-title>
+      {{album.name}}
+    </mat-card-title>
+    <mat-card-content class = "album-card">
+      <img src = {{album.image}} >
+      <p>Type: {{album.albumType}}</p>
+      <p *ngFor="let artist of album.artists">
+        <app-artist [artist] = "artist"></app-artist>
+    </mat-card-content>
+  </mat-card>
+
+</div>

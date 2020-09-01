@@ -1,0 +1,8 @@
+<div class="main-container">
+  <div class = search-container>
+  <input type="text" placeholder="search" #search id ="input-search" (keyup)="assignValue(search)" (keydown.enter) = "searchForTrack(search); goToBottom();">
+  </div>
+  <div *ngFor= "let result of results">
+    <app-track [track] = "result"></app-track>
+  </div>
+</div>
