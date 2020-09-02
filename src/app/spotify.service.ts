@@ -27,7 +27,7 @@ export class SpotifyService {
   constructor(private http: HttpClient) {}
 
   refreshToken() {
-    let headers = new HttpHeaders({
+     headers = new HttpHeaders({
       "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
       Authorization: "Basic " + btoa(this.CLIENT_ID + ":" + this.CLIENT_SECRET),
     });
@@ -37,28 +37,29 @@ export class SpotifyService {
       .post(this.URL_GET_TOKEN, body, { headers })
       .subscribe((response) => {
         localStorage.setItem("access_token", response["access_token"]);
-        localStorage.setItem("hour",new Date().getHours().toString());
+        let date = new Date();
+        let hourLimit = date.getHours() + response["expires_in"]/3600;
+        localStorage.setItem("hour_limit", hourLimit + ":" + date.getMinutes().toString());
         localStorage.setItem("day", new Date().getDay().toString());
       });
   }
 
  isTokenExpired():boolean{
   const token = localStorage.getItem("access_token");
-  const exp = Number(localStorage.getItem("expires_in"));
-  const hour = Number(localStorage.getItem("hour"));
   const day = Number(localStorage.getItem("day"));
-  const actualHour = new Date().getHours();
-  const actualDay = new Date().getDay();
-  const hourLimit =hour + exp/3600;
+  const hourDetail = localStorage.getItem("hour_limit")?.split(":");
+  const date = new Date();
+
+  if( token == null || day == null || hourDetail == null)
+    return true;
+
+    const actualDay = new Date().getDay();
+
   if(actualDay != day)
     return true;
-  else if(!(actualHour >= hour && actualHour <= hourLimit))
+  else if(date.getHours() >= Number(hourDetail[0]) && date.getMinutes() >= Number(hourDetail[1]))
     return true;
   return false;
- }
-
- getToken():string{
-  return localStorage.getItem("access_token");
  }
 
  rebuildHeader(){
@@ -71,11 +72,11 @@ export class SpotifyService {
     let params = [`q=${query}`, "type=track"].join("&");
     let queryUrl = this.URL_API+ 'search' + `?${params}`;
     let oldToken = this.isTokenExpired();
-if(oldToken == true)
-{
-  this.refreshToken();
-  this.rebuildHeader();
-}
+  if(oldToken == true)
+  {
+    var x =  this.refreshToken();
+    var y = this.rebuildHeader();
+  }
     return this.http.get(queryUrl, { headers}).pipe(
       map((response) => response["tracks"].items),
       map((items) =>
