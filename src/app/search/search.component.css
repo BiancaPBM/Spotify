@@ -5,14 +5,8 @@
   flex-direction: row;
   flex-wrap: wrap;
 }
-.search-container{
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-  height: 100vh;
-
+textarea:focus, input:focus{
+  outline: none;
 }
 #input-search{
   width: 50px;

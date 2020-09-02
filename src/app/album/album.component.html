@@ -6,8 +6,9 @@
     <mat-card-content class = "album-card">
       <img src = {{album.image}} >
       <p>Type: {{album.albumType}}</p>
-      <p *ngFor="let artist of album.artists">
-        <app-artist [artist] = "artist"></app-artist>
+      <span *ngFor="let artist of album.artists">
+        <p> {{artist.name}}</p>
+      </span>
     </mat-card-content>
   </mat-card>
 

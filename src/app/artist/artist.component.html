@@ -1,3 +1,14 @@
-<div>Artist name: {{artist.name}}</div>
-<a href={{artist.href}}> link</a>
-<button (click)="callServer('123','artist')">click me</button>
+<div class="artist-container" *ngIf="artist">
+  <mat-card>
+    <mat-card-title>
+      {{artist.name}}
+    </mat-card-title>
+    <mat-card-content>
+      <img src = {{artist.image}} >
+      <div>{{artist.id}}</div>
+      <div *ngFor="let genre of artist.genres">-{{genre}}</div>
+      <div>{{artist.followers}}</div>
+      <div>{{artist.href}}</div>
+    </mat-card-content>
+  </mat-card>
+</div>

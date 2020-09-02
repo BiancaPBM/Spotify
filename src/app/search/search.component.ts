@@ -11,11 +11,8 @@ export class SearchComponent implements OnInit {
   constructor(private service:SpotifyService) { }
 
   ngOnInit(): void {
-    console.log("I am here");
   }
-  getToken(){
-    this.service.getToken();
-  }
+
   assignValue(val:any){
     console.log(val.value);
   }
@@ -27,6 +24,6 @@ export class SearchComponent implements OnInit {
   }
   goToBottom()
   {
-    window.scrollTo(0,document.body.scrollHeight);
+    window.scrollTo(0,900);
   }
 }

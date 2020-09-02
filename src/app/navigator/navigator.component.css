@@ -11,6 +11,9 @@ justify-content: center;
   justify-content: space-evenly;
   position: fixed;
   z-index: 1;
+  background-color: rgb(0, 0, 0);
+  padding: 10px;
+  margin-top: -10px;
 }
 
 li{
@@ -31,11 +34,6 @@ li{
 
 }
 
-
-a{
-  text-decoration: none;
-  color:white;
-}
 ul > li > a:hover {
   color: rgb(212, 159, 175);
   border-color:rgb(212,159,175);

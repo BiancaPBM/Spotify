@@ -11,8 +11,8 @@ import { AlbumComponent } from './album/album.component';
 import { ArtistComponent } from './artist/artist.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MyMaterialModule } from './material.module';
-import { NewComponentComponent } from './new-component/new-component.component';
 import { NavigatorComponent } from './navigator/navigator.component';
+import { ContactComponent } from './contact/contact.component';
 
 @NgModule({
   declarations: [
@@ -21,8 +21,8 @@ import { NavigatorComponent } from './navigator/navigator.component';
     TrackComponent,
     AlbumComponent,
     ArtistComponent,
-    NewComponentComponent,
-    NavigatorComponent
+    NavigatorComponent,
+    ContactComponent,
   ],
   imports: [
     BrowserModule,

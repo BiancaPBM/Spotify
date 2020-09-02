@@ -8,6 +8,7 @@ import { Artist } from "./artist/artist.model";
 import { AbstractJsEmitterVisitor } from "@angular/compiler/src/output/abstract_js_emitter";
 import { Album } from "./album/album.model";
 import { query } from '@angular/animations';
+import { ArtistTrack } from './artist/artist-track.model';
 let headers = new HttpHeaders({
   Authorization: "Bearer " + localStorage.getItem("access_token"),
 });
@@ -79,7 +80,7 @@ if(oldToken == true)
       map((response) => response["tracks"].items),
       map((items) =>
         items.map((track) => {
-          let artists = track.artists.map(element =>  new Artist(element.name, element.id, element.href));
+          let artists = track.artists.map(element =>  new ArtistTrack(element.name, element.id, element.href));
           let album = new Album(
             track.album.name,
             artists,
@@ -102,8 +103,19 @@ if(oldToken == true)
     const query = this.URL_API +type + '/'+id;
     return this.http.get(query,{headers}).pipe(
       map((response:any) =>
-        { const album =  new Album(response.name, response.artists, response.album_type, response.total_tracks, response.release_date, response.images[0].url, response.id, response.images[0].height, response.images[0].width);
-          return album;})
+        {  let result;
+           switch (type){
+          case 'albums':
+             result =  new Album(response.name, response.artists, response.album_type, response.total_tracks, response.release_date, response.images[0].url, response.id, response.images[0].height, response.images[0].width);
+          break;
+          case 'artists':
+            result = new Artist(response.name,response.id,response.href,response.genres,response.images[1].url,response.followers.total);
+          break;
+          default:
+            break;
+          }
+          return result;
+          })
     )
   }
 }

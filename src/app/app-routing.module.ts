@@ -4,12 +4,14 @@ import { ArtistComponent } from './artist/artist.component';
 import { Album } from './album/album.model';
 import { AlbumComponent } from './album/album.component';
 import { SearchComponent } from './search/search.component';
+import { ContactComponent } from './contact/contact.component';
 
 
 const routes: Routes = [
   {path:"",component:SearchComponent, pathMatch:"full"},
   {path:"album/:id", component:AlbumComponent},
-  {path:"artist/:id",component:ArtistComponent}
+  {path:"artist/:id",component:ArtistComponent},
+  {path:"contact", component:ContactComponent}
 
 ];
 
