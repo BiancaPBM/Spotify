@@ -6,4 +6,4 @@ app.get('/*', function(req, res) {
   res.sendFile('index.html', {root: 'dist/music-search-app/'}
 );
 });
-app.listen(process.env.PORT || 8081);
+app.listen(process.env.PORT || 8080);
