@@ -1,30 +1,49 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { SpotifyService } from '../spotify.service';
-import{Track} from '../track/track.model'
+import { Component, OnInit, Input, AfterViewInit, ChangeDetectorRef } from "@angular/core";
+import { SpotifyService } from "../spotify.service";
+import { Track } from "../track/track.model";
+import { Router, ActivatedRoute, Params } from "@angular/router";
 @Component({
-  selector: 'app-search',
-  templateUrl: './search.component.html',
-  styleUrls: ['./search.component.css']
+  selector: "app-search",
+  templateUrl: "./search.component.html",
+  styleUrls: ["./search.component.css"],
 })
-export class SearchComponent implements OnInit {
+export class SearchComponent implements OnInit, AfterViewInit {
   results: Track[] = new Array<Track>();
-  constructor(private service:SpotifyService) { }
-
+  constructor(
+    private service: SpotifyService,
+    private act: ActivatedRoute,
+    private route: Router,
+    private cdRef: ChangeDetectorRef
+  ) {}
+  searchInput;
   ngOnInit(): void {
+
   }
 
-  assignValue(val:any){
-    console.log(val.value);
+  ngAfterViewInit(){
+    this.searchInput = this.act.snapshot.queryParams['search'];
+    if(this.searchInput){
+      this.searchForTrack();
+    }
   }
-  searchForTrack(query: any)
-  {
-    this.service.search(query.value).subscribe( response =>
-      {this.results = response; console.log(this.results)
-      this.goToBottom();}
-      );
+
+  searchForTrack() {
+    if(this.searchInput){
+      this.service.search(this.searchInput).subscribe((response) => {
+        this.results = response;
+        this.route.navigate([], {
+          relativeTo: this.act,
+          queryParams: {
+            search: this.searchInput
+          },
+        });
+        this.cdRef.detectChanges();
+        this.goToBottom();
+      });
+    }
   }
-  goToBottom()
-  {
-    window.scrollTo(0,900);
+
+  goToBottom(): void {
+    window.scroll(0, 900);
   }
 }

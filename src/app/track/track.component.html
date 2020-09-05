@@ -1,8 +1,8 @@
-<mat-card class = "track-container">
+<mat-card class = "track-container" >
   <mat-card-title class ="track-title">{{track.name}}</mat-card-title>
   <mat-card-content class="track-content">
     <img src = {{track.album.image}}>
-      <a [routerLink] = "['/album',track.album.id]" routerLinkActive="active" >
+      <a [routerLink] = "['/album',track.album.id]" routerLinkActive="active"  [queryParamsHandling]="'merge'">
         {{track.album.name}}
       </a>
       <div *ngFor="let artist of track.artists">

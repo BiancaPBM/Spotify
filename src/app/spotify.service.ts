@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { HttpClient, HttpHeaders, HttpParams } from "@angular/common/http";
 import { THIS_EXPR } from "@angular/compiler/src/output/output_ast";
 import { Track } from "./track/track.model";
 import { map } from "rxjs/operators";
@@ -74,6 +74,8 @@ async getAuthorization():Promise<any>
  }
 
   search(query: string): Observable<Track[]>{
+    let queryParams:HttpParams = new HttpParams();
+    queryParams.set("search",query);
     let params = [`q=${query}`, "type=track"].join("&");
     let queryUrl = this.URL_API+ 'search' + `?${params}`;
     let oldToken = this.isTokenExpired();
@@ -81,7 +83,12 @@ async getAuthorization():Promise<any>
   {
     var x =  this.refreshToken();
   }
-    return this.http.get(queryUrl, { headers}).pipe(
+
+    return this.http.get(queryUrl,{
+      headers: headers,
+      params:queryParams
+    }
+     ).pipe(
       map((response) => response["tracks"].items),
       map((items) =>
         items.map((track) => {

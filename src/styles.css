@@ -1,8 +1,15 @@
-@import '@angular/material/prebuilt-themes/pink-bluegrey.css';
-body{
-  background-color:rgba(0, 0, 0, 0.637);
-}
+@import '@angular/material/prebuilt-themes/indigo-pink.css';
 
+body{
+  background: linear-gradient(#e66465, #9198e5);}
+
+.mat-card{
+  background-color: rgb(24, 24, 24);
+  color:white;
+  display: flex;
+  justify-content: center;
+  align-items:center;
+}
 a{
   text-decoration: none;
   color:white;
