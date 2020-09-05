@@ -19,7 +19,8 @@ export class SearchComponent implements OnInit {
   searchForTrack(query: any)
   {
     this.service.search(query.value).subscribe( response =>
-      {this.results = response; console.log(this.results)}
+      {this.results = response; console.log(this.results)
+      this.goToBottom();}
       );
   }
   goToBottom()

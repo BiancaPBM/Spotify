@@ -9,6 +9,7 @@ import { AbstractJsEmitterVisitor } from "@angular/compiler/src/output/abstract_
 import { Album } from "./album/album.model";
 import { query } from '@angular/animations';
 import { ArtistTrack } from './artist/artist-track.model';
+import { Observable } from 'rxjs';
 let headers = new HttpHeaders({
   Authorization: "Bearer " + localStorage.getItem("access_token"),
 });
@@ -26,56 +27,59 @@ export class SpotifyService {
 
   constructor(private http: HttpClient) {}
 
-  refreshToken() {
-     headers = new HttpHeaders({
-      "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-      Authorization: "Basic " + btoa(this.CLIENT_ID + ":" + this.CLIENT_SECRET),
-    });
+  refreshToken():void{
 
-    let body = "grant_type=client_credentials";
-    return this.http
-      .post(this.URL_GET_TOKEN, body, { headers })
-      .subscribe((response) => {
-        localStorage.setItem("access_token", response["access_token"]);
-        let date = new Date();
-        let hourLimit = date.getHours() + response["expires_in"]/3600;
-        localStorage.setItem("hour_limit", hourLimit + ":" + date.getMinutes().toString());
-        localStorage.setItem("day", new Date().getDay().toString());
-      });
+    const x = this.getAuthorization().then((response) => {
+      localStorage.setItem("access_token", response["access_token"]);
+      let date = new Date();
+      let hourLimit = date.getHours() + response["expires_in"]/3600;
+      localStorage.setItem("hour_limit", hourLimit + ":" + date.getMinutes().toString());
+      localStorage.setItem("day", new Date().getDay().toString());
+      this.rebuildHeader();
+    })
   }
+
+async getAuthorization():Promise<any>
+{
+  let headers = new HttpHeaders({
+    "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
+    Authorization: "Basic " + btoa(this.CLIENT_ID + ":" + this.CLIENT_SECRET),
+  });
+  let body = "grant_type=client_credentials";
+  return await this.http.post(this.URL_GET_TOKEN,body, {headers}).toPromise();
+}
 
  isTokenExpired():boolean{
   const token = localStorage.getItem("access_token");
   const day = Number(localStorage.getItem("day"));
-  const hourDetail = localStorage.getItem("hour_limit")?.split(":");
+  const hourDetails = localStorage.getItem("hour_limit")?.split(":");
+
   const date = new Date();
-
-  if( token == null || day == null || hourDetail == null)
+  const actualDay = new Date().getDay();
+  const actualHour = new Date().getHours();
+  if( token == null || day == null || hourDetails == null)
     return true;
-
-    const actualDay = new Date().getDay();
-
   if(actualDay != day)
     return true;
-  else if(date.getHours() >= Number(hourDetail[0]) && date.getMinutes() >= Number(hourDetail[1]))
+  else if(actualHour > Number(hourDetails[0]) || (actualHour == Number(hourDetails[0]) && date.getMinutes() >= Number(hourDetails[1])))
     return true;
+
   return false;
  }
 
- rebuildHeader(){
+ rebuildHeader():void{
    headers =  new HttpHeaders({
     Authorization: "Bearer " + localStorage.getItem("access_token"),
   });
  }
 
-  search(query: string) {
+  search(query: string): Observable<Track[]>{
     let params = [`q=${query}`, "type=track"].join("&");
     let queryUrl = this.URL_API+ 'search' + `?${params}`;
     let oldToken = this.isTokenExpired();
   if(oldToken == true)
   {
     var x =  this.refreshToken();
-    var y = this.rebuildHeader();
   }
     return this.http.get(queryUrl, { headers}).pipe(
       map((response) => response["tracks"].items),
@@ -100,7 +104,7 @@ export class SpotifyService {
     );
   }
 
-  searchById(id:string, type:string){
+  searchById(id:string, type:string):Observable<any>{
     const query = this.URL_API +type + '/'+id;
     return this.http.get(query,{headers}).pipe(
       map((response:any) =>
